@@ -8,6 +8,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.IntegerSerializer;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -31,10 +32,14 @@ public class RetentionProducerApp {
     //Instantiate a Producer
     final Producer<Integer, byte[]> producer = new KafkaProducer<>(config);
 
+    //Define 1K value
+    byte[] value = new byte[1000];
+    Arrays.fill(value, (byte) 1);
+
     //Create 100 records
     IntStream.rangeClosed(1, 100).boxed()
         .map(number ->
-            new ProducerRecord<>("retention", number, new byte[1000]))
+            new ProducerRecord<>("retention", number, value))
         .forEach(record -> {
           try {
             Future<RecordMetadata> futureMetadata = producer.send(record);

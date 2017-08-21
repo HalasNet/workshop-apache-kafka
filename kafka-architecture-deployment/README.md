@@ -229,3 +229,109 @@ records are not compacted:
 {partition=0, offset=98, topic=compaction, key=2}
 {partition=0, offset=99, topic=compaction, key=8}
 ```
+
+## Lab 04: Kafka Command Tools
+
+### Replay Log Producer
+
+First we will use `kafka-replay-log-producer` tool to recreate a new
+topic copying values from another topic:
+
+```bash
+bin/kafka-replay-log-producer.sh --broker-list localhost:9092 \
+                                 --inputtopic compaction \
+                                 --outputtopic compaction-01
+```
+
+Ignore the exception, means that no message has been received since 10 seconds ago.
+
+Check that a new topic is created:
+
+```bash
+bin/kafka-topics.sh --zookeeper localhost:2181 \
+                    --list
+```
+
+A new topic is create and can be consumed with the same values from topic `compaction`.
+
+### Console Consumer
+
+```
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+                              --topic compaction-01 \
+                              --from-beginning \
+                              --property print.key=true \
+                              --consumer-property group.id=console-consumer-01 \
+                              --key-deserializer org.apache.kafka.common.serialization.IntegerDeserializer
+```
+
+
+This consumer is using a consumer group to identify it.
+
+If you execute the same command, you won't see values, as all are consumed so far.
+
+### Check Consumer Groups
+
+To validate how far your consumer groups has move along the topic partitions, execute:
+
+To list `consumer-groups`:
+
+```bash
+bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 \
+                             --list
+```
+
+And to check its consumption:
+
+```bash
+bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 \
+                             --describe \
+                             --group console-consumer-01
+```
+
+### Reset offsets
+
+If you want to back in the log records and re-process some of them it is
+possible using the same tool:
+
+Let's go back 3 records:
+
+```bash
+ bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092
+                              --reset-offsets \
+                              --group console-consumer-01 \
+                              --topic compaction-01 \
+                              --shift-by -3 \
+                              --execute
+```
+
+If you execute the consumer it will re-consume this values.
+
+### Delete records
+
+If you want to remove records stored at the topic, use the following command:
+
+First produce some messages with `kafka-console-producer` tool:
+
+```bash
+bin/kafka-console-producer.sh --broker-list localhost:9092 \
+                              --topic simple-topic-01
+> error 1
+> error 2
+> message 1
+```
+
+
+
+```bash
+bin/kafka-delete-records.sh --bootstrap-server localhost:9092 \
+                            --offset-json-file ~/dev/sysco/workshop-apache-kafka/kafka-architecture-deployment/src/main/resources/delete-records.json
+```
+
+And execute a new console consumer to check:
+
+```
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+                              --topic simple-topic-01 \
+                              --from-beginning
+```
