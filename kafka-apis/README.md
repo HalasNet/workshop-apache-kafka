@@ -191,13 +191,108 @@ invoke `#send` method as part of the same transaction:
 
 ## Lab 02: Kafka Consumer API
 
+**Use case:**
 
-
-### Implement Kafka Consumer using `KafkaConsumerLoop`
+Consume and print out issue records produced from Issue REST Service.
 
 ### Run 3 Consumer Group instances
 
+A Consumer Thread is provided called `KafkaConsumerLoop`, and an
+application class called `IssueConsumerApp`. Currently is spanning one
+instance only:
+
+By default, Kafka Consumer will be polling from the latest record since
+it gets connected, and it also has auto-commit enabled.
+
+Let's change the number of instances to test consume instances:
+
+```java
+  private static final int NUM_CONSUMER_INSTANCES = 3;
+```
+
+And run the class `IssueConsumerApp` again.
+
+As topic only have 1 partition, only one thread is consuming records.
+
+Let's create a new topic, and update its name on consumer side:
+
+```bash
+bin/kafka-topics.sh --zookeeper localhost:2181 \
+                    --create \
+                    --partitions 3 \
+                    --replication-factor 3 \
+                    --topic issue-events-03
+```
+
+And execute producer with Repository `KafkaIssueRepository03`
+
+After executing the producer application, you will see that
+records with different keys will be stored in different partitions.
+
+And that each consumer instance will receive records from one
+partition each.
+
+### Get records from earliest
+
+To get messages from scratch we should add the following configuration:
+
+```java
+    config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+```
+
+### Enable At-Least-Once
+
+As mentioned, auto-commit is enabled by default.
+
+This means that if we fail to process one records, it would potentially
+lost messages, achieving `at-most-once` semantics.
+
+To move it to `al-least-once` we should first disable `auto-commit`
+and then commit manually:
+
+```java
+    config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+```
+
+```java
+      while (true) {
+        ConsumerRecords<String, String> records = consumer.poll(Long.MAX_VALUE);
+        for (ConsumerRecord<String, String> record : records) {
+          Map<String, Object> data = new HashMap<>();
+          data.put("partition", record.partition());
+          data.put("offset", record.offset());
+          data.put("key", record.key());
+          data.put("value", record.value());
+          System.out.printf("id => %d -- metadata => %s%n", this.id, data);
+          consumer.commitSync();
+        }
+      }
+```
+
+### Manage isolation level
+
+With the addition of transactions on the producer side, we now have to
+be aware of isolation levels on the consumer side.
+
+There are 2 levels: `READ_COMMITED` and `READ_UNCOMMITED` (default).
+
+First let's create a new Repository where transaction is not committed.
+
+This means that messages will be received by broker.
+
+On the consumer side let's test with the default value. Record will be received.
+
+Then try with `read_commited`:
+
+```java
+      config.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
+```
+
+Records won't be received with this configuration.
+
 ## Lab 03: Kafka Connector API
+
+
 
 ### Configure and start Twitter Source Connector
 
