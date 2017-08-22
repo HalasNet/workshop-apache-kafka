@@ -81,7 +81,8 @@ bin/kafka-topics.sh --zookeeper localhost:2181 \
                     --create \
                     --topic topic1 \
                     --partitions 3 \
-                    --replication-factor 3
+                    --replication-factor 3 \
+                    --config min.insync.replicas=3
 ```
 
 Connect to `zookeeper` and list `topics`:
