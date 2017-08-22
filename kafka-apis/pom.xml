@@ -5,6 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <modules>
         <module>kafka-producer-api</module>
+        <module>kafka-consumer-api</module>
     </modules>
 
     <parent>
