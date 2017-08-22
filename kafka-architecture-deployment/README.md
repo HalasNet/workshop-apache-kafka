@@ -3,6 +3,7 @@
 ## Lab 01: Creating a Kafka Cluster
 
 Download Apache Kafka sources from [here](https://www.apache.org/dyn/closer.cgi?path=/kafka/0.11.0.0/kafka-0.11.0.0-src.tgz)
+or check out its GitHub repository [here](https://github.com/apache/kafka/)
 and binaries from [here](https://www.apache.org/dyn/closer.cgi?path=/kafka/0.11.0.0/kafka_2.11-0.11.0.0.tgz)
 
 Create a directory to extract Kafka (e.g. `/opt/apache/kafka/`)
@@ -29,9 +30,9 @@ To add more brokers to the cluster we have to create new `server.properties` fil
 Create a couple more files `server1.properties` and `server2.properties`
 and update the following parameters:
 
-* broker.id
-* listeners
-* log.dirs
+* `broker.id`
+* `listeners`
+* `log.dirs`
 
 ## Lab 02: Navigating Zookeeper directories
 
@@ -325,7 +326,7 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 \
 
 ```bash
 bin/kafka-delete-records.sh --bootstrap-server localhost:9092 \
-                            --offset-json-file ~/dev/sysco/workshop-apache-kafka/kafka-architecture-deployment/src/main/resources/delete-records.json
+                            --offset-json-file ~/dev/sysco/workshop-apache-kafka/kafka-architecture-deployment/delete-records.json
 ```
 
 And execute a new console consumer to check:
