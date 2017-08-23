@@ -1,0 +1,27 @@
+{
+  "namespace": "no.sysco.middleware.workshops.kafka.schema.issue.command",
+  "type": "record",
+  "name": "AddIssueCommandRecord",
+  "fields": [
+    {
+      "name": "correlation_id",
+      "type": "string"
+    },
+    {
+      "name": "title",
+      "type": "string"
+    },
+    {
+      "name": "descripcion",
+      "type": ["string", "null"]
+    },
+    {
+      "name": "type",
+      "type": "string"
+    },
+    {
+      "name": "executed_by",
+      "type": "string"
+    }
+  ]
+}

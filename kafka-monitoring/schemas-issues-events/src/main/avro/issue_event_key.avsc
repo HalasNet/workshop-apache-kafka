@@ -1,0 +1,29 @@
+{
+  "namespace": "no.sysco.middleware.workshops.kafka.schema.issue.event",
+  "type": "record",
+  "name": "IssueEventKeyRecord",
+  "fields": [
+    {
+      "name": "correlation_id",
+      "type": "string"
+    },
+    {
+      "name": "executed_by",
+      "type": "string"
+    },
+    {
+      "name": "executed_at",
+      "type": "string"
+    },
+    {
+      "name": "event",
+      "type": {
+        "name": "EventEnum",
+        "type": "enum",
+        "symbols": [
+          "ADDED"
+        ]
+      }
+    }
+  ]
+}

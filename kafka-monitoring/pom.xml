@@ -3,20 +3,22 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>no.sysco.middleware.workshops</groupId>
         <artifactId>workshop-apache-kafka</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kafka-architecture-deployment</artifactId>
+    <artifactId>kafka-monitoring</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-        </dependency>
-    </dependencies>
+    <packaging>pom</packaging>
 
+    <modules>
+        <module>rest-issues-commands</module>
+        <module>issues-commands-processor</module>
+        <module>rest-issues-query</module>
+        <module>issues-events-processor</module>
+        <module>schemas-issues-commands</module>
+        <module>schemas-issues-events</module>
+    </modules>
 </project>

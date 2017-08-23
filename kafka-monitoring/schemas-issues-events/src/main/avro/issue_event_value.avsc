@@ -1,0 +1,27 @@
+{
+  "namespace": "no.sysco.middleware.workshops.kafka.schema.issue.event",
+  "type": "record",
+  "name": "IssueEventRecord",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "title",
+      "type": "string"
+    },
+    {
+      "name": "descripcion",
+      "type": ["string", "null"]
+    },
+    {
+      "name": "type",
+      "type": "string"
+    },
+    {
+      "name": "executed_by",
+      "type": "string"
+    }
+  ]
+}

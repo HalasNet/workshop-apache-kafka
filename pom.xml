@@ -9,6 +9,7 @@
         <module>kafka-architecture-deployment</module>
         <module>kafka-apis</module>
         <module>kafka-integration</module>
+        <module>kafka-monitoring</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -17,9 +18,12 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <kafka.version>0.11.0.0</kafka.version>
         <dropwizard.version>1.1.2</dropwizard.version>
         <confluent.version>3.3.0</confluent.version>
+        <avro.version>1.8.1</avro.version>
     </properties>
 
     <dependencyManagement>
@@ -38,6 +42,11 @@
                 <groupId>io.dropwizard</groupId>
                 <artifactId>dropwizard-core</artifactId>
                 <version>${dropwizard.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro</artifactId>
+                <version>${avro.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.confluent</groupId>
