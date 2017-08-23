@@ -11,5 +11,15 @@
 
     <artifactId>rest-issues-query</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>rest</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
