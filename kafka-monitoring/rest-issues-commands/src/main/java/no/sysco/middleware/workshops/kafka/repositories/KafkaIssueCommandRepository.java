@@ -9,20 +9,19 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  *
  */
 public class KafkaIssueCommandRepository {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(KafkaIssueCommandRepository.class);
+  private static final Logger LOGGER = Logger.getLogger(KafkaIssueCommandRepository.class.getName());
 
   private static final String ISSUES_COMMANDS_TOPIC = "issues-commands";
 
@@ -67,7 +66,7 @@ public class KafkaIssueCommandRepository {
             data.put("topic", metadata.topic());
             data.put("partition", metadata.partition());
             data.put("offset", metadata.offset());
-            LOGGER.debug(data.toString());
+            LOGGER.info(data.toString());
           }
         }));
 

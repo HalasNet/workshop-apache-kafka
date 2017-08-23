@@ -10,14 +10,13 @@ import org.apache.avro.specific.SpecificData;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class IssueEventRecord extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -2572833383303250992L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"IssueEventRecord\",\"namespace\":\"no.sysco.middleware.workshops.kafka.schema.issue.event\",\"fields\":[{\"name\":\"id\",\"type\":\"string\"},{\"name\":\"title\",\"type\":\"string\"},{\"name\":\"descripcion\",\"type\":[\"string\",\"null\"]},{\"name\":\"type\",\"type\":\"string\"},{\"name\":\"executed_by\",\"type\":\"string\"}]}");
+  private static final long serialVersionUID = -9212022439337516225L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"IssueEventRecord\",\"namespace\":\"no.sysco.middleware.workshops.kafka.schema.issue.event\",\"fields\":[{\"name\":\"id\",\"type\":\"string\"},{\"name\":\"title\",\"type\":\"string\"},{\"name\":\"descripcion\",\"type\":[\"string\",\"null\"]},{\"name\":\"type\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public java.lang.CharSequence id;
   @Deprecated public java.lang.CharSequence title;
   @Deprecated public java.lang.CharSequence descripcion;
   @Deprecated public java.lang.CharSequence type;
-  @Deprecated public java.lang.CharSequence executed_by;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -32,14 +31,12 @@ public class IssueEventRecord extends org.apache.avro.specific.SpecificRecordBas
    * @param title The new value for title
    * @param descripcion The new value for descripcion
    * @param type The new value for type
-   * @param executed_by The new value for executed_by
    */
-  public IssueEventRecord(java.lang.CharSequence id, java.lang.CharSequence title, java.lang.CharSequence descripcion, java.lang.CharSequence type, java.lang.CharSequence executed_by) {
+  public IssueEventRecord(java.lang.CharSequence id, java.lang.CharSequence title, java.lang.CharSequence descripcion, java.lang.CharSequence type) {
     this.id = id;
     this.title = title;
     this.descripcion = descripcion;
     this.type = type;
-    this.executed_by = executed_by;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
@@ -50,7 +47,6 @@ public class IssueEventRecord extends org.apache.avro.specific.SpecificRecordBas
     case 1: return title;
     case 2: return descripcion;
     case 3: return type;
-    case 4: return executed_by;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -63,7 +59,6 @@ public class IssueEventRecord extends org.apache.avro.specific.SpecificRecordBas
     case 1: title = (java.lang.CharSequence)value$; break;
     case 2: descripcion = (java.lang.CharSequence)value$; break;
     case 3: type = (java.lang.CharSequence)value$; break;
-    case 4: executed_by = (java.lang.CharSequence)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -133,22 +128,6 @@ public class IssueEventRecord extends org.apache.avro.specific.SpecificRecordBas
   }
 
   /**
-   * Gets the value of the 'executed_by' field.
-   * @return The value of the 'executed_by' field.
-   */
-  public java.lang.CharSequence getExecutedBy() {
-    return executed_by;
-  }
-
-  /**
-   * Sets the value of the 'executed_by' field.
-   * @param value the value to set.
-   */
-  public void setExecutedBy(java.lang.CharSequence value) {
-    this.executed_by = value;
-  }
-
-  /**
    * Creates a new IssueEventRecord RecordBuilder.
    * @return A new IssueEventRecord RecordBuilder
    */
@@ -184,7 +163,6 @@ public class IssueEventRecord extends org.apache.avro.specific.SpecificRecordBas
     private java.lang.CharSequence title;
     private java.lang.CharSequence descripcion;
     private java.lang.CharSequence type;
-    private java.lang.CharSequence executed_by;
 
     /** Creates a new Builder */
     private Builder() {
@@ -213,10 +191,6 @@ public class IssueEventRecord extends org.apache.avro.specific.SpecificRecordBas
         this.type = data().deepCopy(fields()[3].schema(), other.type);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.executed_by)) {
-        this.executed_by = data().deepCopy(fields()[4].schema(), other.executed_by);
-        fieldSetFlags()[4] = true;
-      }
     }
 
     /**
@@ -240,10 +214,6 @@ public class IssueEventRecord extends org.apache.avro.specific.SpecificRecordBas
       if (isValidValue(fields()[3], other.type)) {
         this.type = data().deepCopy(fields()[3].schema(), other.type);
         fieldSetFlags()[3] = true;
-      }
-      if (isValidValue(fields()[4], other.executed_by)) {
-        this.executed_by = data().deepCopy(fields()[4].schema(), other.executed_by);
-        fieldSetFlags()[4] = true;
       }
     }
 
@@ -403,45 +373,6 @@ public class IssueEventRecord extends org.apache.avro.specific.SpecificRecordBas
       return this;
     }
 
-    /**
-      * Gets the value of the 'executed_by' field.
-      * @return The value.
-      */
-    public java.lang.CharSequence getExecutedBy() {
-      return executed_by;
-    }
-
-    /**
-      * Sets the value of the 'executed_by' field.
-      * @param value The value of 'executed_by'.
-      * @return This builder.
-      */
-    public no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventRecord.Builder setExecutedBy(java.lang.CharSequence value) {
-      validate(fields()[4], value);
-      this.executed_by = value;
-      fieldSetFlags()[4] = true;
-      return this;
-    }
-
-    /**
-      * Checks whether the 'executed_by' field has been set.
-      * @return True if the 'executed_by' field has been set, false otherwise.
-      */
-    public boolean hasExecutedBy() {
-      return fieldSetFlags()[4];
-    }
-
-
-    /**
-      * Clears the value of the 'executed_by' field.
-      * @return This builder.
-      */
-    public no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventRecord.Builder clearExecutedBy() {
-      executed_by = null;
-      fieldSetFlags()[4] = false;
-      return this;
-    }
-
     @Override
     public IssueEventRecord build() {
       try {
@@ -450,7 +381,6 @@ public class IssueEventRecord extends org.apache.avro.specific.SpecificRecordBas
         record.title = fieldSetFlags()[1] ? this.title : (java.lang.CharSequence) defaultValue(fields()[1]);
         record.descripcion = fieldSetFlags()[2] ? this.descripcion : (java.lang.CharSequence) defaultValue(fields()[2]);
         record.type = fieldSetFlags()[3] ? this.type : (java.lang.CharSequence) defaultValue(fields()[3]);
-        record.executed_by = fieldSetFlags()[4] ? this.executed_by : (java.lang.CharSequence) defaultValue(fields()[4]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);
