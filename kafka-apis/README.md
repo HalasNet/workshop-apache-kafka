@@ -292,18 +292,57 @@ Records won't be received with this configuration.
 
 ## Lab 03: Kafka Connector API
 
+**Use case:**
 
+Bring tweets with specified #hashtags into Kafka `tweets` topic.
+
+Then move those records into a `tweets.log` file.
 
 ### Configure and start Twitter Source Connector
 
+Go here and create a new app: https://apps.twitter.com/
+
+Put your keys on `kafka-connect-api/twitter-source-connector/twitter-source.properties`
+
+```
+twitter.consumerkey=nzU213sfdge...
+twitter.consumersecret=dfgsdfg324235Tiv....
+twitter.token=4523456234295304-...
+twitter.secret=2342fEEZa93LImOv523534is....
+```
+
+And define your Kafka installation directory on `run.sh` script.
+
+Execute it and you should be able to receive tweets on `tweets` topics.
+
+```
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+                              --topic tweets \
+                              --from-beginning
+```
+
 ### Configure and start File Sink Connector
+
+Go to `kafka-connect-api/file-sink-connector` and execute `run.sh` script.
+
+You should have a file on `/tmp/twitter-sink-file.txt` with tweets stored.
 
 ### Implement Transformation to modify header on Source Connector
 
+//TODO
+
 ## Lab 04: Kafka Streams API
+
+Kafka Streams allow `near` real-time processing on event streams.
+
+### Query tweets by Username
+
+//TODO
+//Impl done
 
 ### Implement an application to count hashtags
 
-### Query tweets by Username
+
+
 
 ### Find hashtag ranking by minute
