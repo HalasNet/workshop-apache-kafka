@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
  *
  */
 @Path("tweets")
+@Produces(MediaType.TEXT_PLAIN + ";charset=utf-8")
 public class TweetsResource {
 
   private final KafkaTweetsStreams kafkaTweetsStreams;
@@ -23,7 +24,6 @@ public class TweetsResource {
 
   @GET
   @Path("{username}")
-  @Produces(MediaType.TEXT_PLAIN + ";charset=utf-8")
   public Response getTweetsByUsername(@PathParam("username") String username) {
     String tweets = kafkaTweetsStreams.getTweetsByUsername(username);
     return Response.ok(tweets).build();
@@ -32,13 +32,14 @@ public class TweetsResource {
   @GET
   @Path("hashtags")
   public Response getHashtagsCount() {
-    return Response.ok().build();
+    String hashtagsCount = kafkaTweetsStreams.getHashtags();
+    return Response.ok(hashtagsCount).build();
   }
 
-
   @GET
-  @Path("hashtags/ranking")
-  public Response getHashtagsRanking() {
-    return Response.ok().build();
+  @Path("hashtags/{hashtag}")
+  public Response getHashtagProgress(@PathParam("hashtag") String hashtag) {
+    String hashtagProgress = kafkaTweetsStreams.getHashtagProgress(hashtag);
+    return Response.ok(hashtagProgress).build();
   }
 }

@@ -335,14 +335,135 @@ You should have a file on `/tmp/twitter-sink-file.txt` with tweets stored.
 
 Kafka Streams allow `near` real-time processing on event streams.
 
+**Use case:**
+
+Tweets are flowing into Kafka using Connect API.
+
+We need to implement an HTTP service that return the following:
+
+* Tweets per user
+* Hashtags count
+* Progress of Hashtag per minute (Group counts per minute)
+
 ### Query tweets by Username
 
-//TODO
-//Impl done
+First, let's use the Kafka Streams DSL (High Level API) to process
+tweets.
 
-### Implement an application to count hashtags
+We need the following process:
 
+1. Map username as `key`
+2. Map tweet text to `value`
+3. Group tweets with the same `key`
+4. Join tweets together
+5. Save result in a data store and a topic
 
+```java
+    final KStreamBuilder builder = new KStreamBuilder();
+    builder
+        .stream(jsonNodeSerde, jsonNodeSerde, TWEETS)
+        //Defining a key = screen_name
+        .selectKey((key, value) ->
+            value.get("payload").get("user").get("screen_name").textValue())
+        //Define new value = tweets
+        .mapValues(value ->
+            value.get("payload").get("text").textValue())
+        //Join tweets by key (i.e. screen_name)
+        .groupByKey(new Serdes.StringSerde(), new Serdes.StringSerde())
+        //Reducing to concatenation of tweets, and keep it on TWEETS_BY_USERNAME store
+        .reduce(
+            (value1, value2) -> value1 + "\n\n" + value2,
+            TWEETS_BY_USERNAME)
+        //Save values on TWEETS_BY_USERNAME topic
+        .to(Serdes.String(), Serdes.String(), TWEETS_BY_USERNAME);
+```
 
+Once we have this KafkaStream definition started, we can query the state
+from `TWEETS_BY_USERNAME` store:
 
-### Find hashtag ranking by minute
+```java
+      final ReadOnlyKeyValueStore<String, String> store = ...;
+      final String value = store.get(username);
+      return Optional.ofNullable(value).orElse("No tweets");
+```
+
+### Count hashtags
+
+To count hashtags we can follow these steps:
+
+1. Map payload to `hashtags` element
+2. FlatMap `hashtags` to list elements
+3. Map `hashtag` elements to text value
+
+We can store this value on a topic `TWEETS_HASHTAGS` (we will use
+this `topic` later)
+
+After creating a new stream of hashtags, we can do the following to count hashtags:
+
+1. Group hashtags together
+2. Count how many repetitions are
+3. Save results in store and topic `HASHTAGS_COUNT`
+
+```java
+    KStream<JsonNode, String> hashtagsStream = builder
+        .stream(jsonNodeSerde, jsonNodeSerde, TWEETS)
+        .mapValues(value -> value.get("payload").get("entities").withArray("hashtags"))
+        .flatMapValues(ArrayNode.class::cast)
+        .mapValues(value -> value.get("text").textValue());
+
+    hashtagsStream.to(jsonNodeSerde, Serdes.String(), TWEETS_HASHTAGS);
+
+    hashtagsStream
+        .groupBy((key, value) -> value, Serdes.String(), Serdes.String())
+        .count(HASHTAGS_COUNT)
+        .to(Serdes.String(), Serdes.Long(), HASHTAGS_COUNT);
+```
+
+Once KafkaStream is started we can query its state:
+
+```java
+      final ReadOnlyKeyValueStore<String, String> store = ...;
+      Map<String, Long> counts = new HashMap<>();
+      final KeyValueIterator<String, Long> all = store.all();
+      while (all.hasNext()) {
+          KeyValue<String, Long> next = all.next();
+          counts.put(next.key, next.value);
+      }
+      return counts.toString();
+```
+
+This will return a list of all hashtags with its occurrences.
+
+### Find hashtag count by minute
+
+If we want to know how a hashtag has progress to end up with its total count
+we can use Window processing with Kafka Streams.
+
+1. Read stream from `TWEETS_HASHTAGS`
+2. Group hashtags
+3. Count using a Time Window of 1 minute
+4. Save result on `HASHTAG_PER_MINUTE` store
+
+```java
+    builder.stream(jsonNodeSerde, Serdes.String(), TWEETS_HASHTAGS)
+        .groupBy((key, value) -> value, Serdes.String(), Serdes.String())
+        .count(TimeWindows.of(TimeUnit.MINUTES.toMillis(1)), HASHTAG_PER_MINUTE);
+```
+
+Once KafkaStream is started we can query its state:
+
+```java
+      ReadOnlyWindowStore<String, Long> windowStore = ...;
+      long timeFrom = 0; // beginning of time = oldest available
+      long timeTo = System.currentTimeMillis(); // now (in processing-time)
+      WindowStoreIterator<Long> iterator = windowStore.fetch(hashtag, timeFrom, timeTo);
+      StringBuilder result = new StringBuilder();
+      while (iterator.hasNext()) {
+        KeyValue<Long, Long> next = iterator.next();
+        long windowTimestamp = next.key;
+        result.append(String.format("\nHashtag '%s' @ time %s is %d%n", hashtag, new Date(windowTimestamp).toString(), next.value));
+      }
+      return result.toString();
+```
+
+This will return a list of minutes recorded with the # of occurrences of a hashtag.
