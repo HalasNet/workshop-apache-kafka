@@ -6,6 +6,8 @@
     <modules>
         <module>kafka-producer-api</module>
         <module>kafka-consumer-api</module>
+        <module>kafka-connector-api</module>
+        <module>kafka-streams-api</module>
     </modules>
 
     <parent>

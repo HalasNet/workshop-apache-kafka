@@ -24,6 +24,10 @@ public class Issue {
     this.description = description;
   }
 
+  public String id(){
+    return id;
+  }
+
   public String printJson() {
     final ObjectNode issueObjectNode =
         MAPPER.createObjectNode()

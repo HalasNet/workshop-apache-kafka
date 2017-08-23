@@ -15,14 +15,14 @@ import java.util.Properties;
 /**
  *
  */
-public class KafkaIssueTxRepository implements IssueRepository {
+public class KafkaIssueTxRepository04 implements IssueRepository {
 
-  private static final String TOPIC = "issue-events-02";
+  private static final String TOPIC = "issue-events-04";
   private static final String LOGS_TOPIC = "events-logs";
 
   private final Producer<String, String> producer;
 
-  public KafkaIssueTxRepository() {
+  public KafkaIssueTxRepository04() {
     try {
       final Properties config = new Properties();
       config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
@@ -69,10 +69,11 @@ public class KafkaIssueTxRepository implements IssueRepository {
           new ProducerRecord<>(LOGS_TOPIC, String.format("issue %s added", issue.id()));
       producer.send(logRecord);
 
-      producer.commitTransaction();
+      //Disable commit to test isolation level.
+      //producer.commitTransaction();
     } catch (Exception e) {
       e.printStackTrace();
-      producer.abortTransaction();
+      //producer.abortTransaction();
     }
   }
 }

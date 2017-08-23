@@ -15,14 +15,14 @@ import java.util.Properties;
 /**
  *
  */
-public class KafkaIssueRepository implements IssueRepository {
+public class KafkaIssueTxRepository implements IssueRepository {
 
   private static final String TOPIC = "issue-events-02";
   private static final String LOGS_TOPIC = "events-logs";
 
   private final Producer<String, String> producer;
 
-  public KafkaIssueRepository() {
+  public KafkaIssueTxRepository() {
     try {
       final Properties config = new Properties();
       config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
@@ -30,10 +30,8 @@ public class KafkaIssueRepository implements IssueRepository {
       config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
       //Acknowledge to all replicas
       config.put(ProducerConfig.ACKS_CONFIG, "all");
-      //Batch support
-      config.put(ProducerConfig.BATCH_SIZE_CONFIG, 10000); //10KB
-      config.put(ProducerConfig.LINGER_MS_CONFIG, 30000); //30secs
       //Transaction
+      config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
       config.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, "kafka-issue-repository");
 
       producer = new KafkaProducer<>(config);
@@ -51,7 +49,7 @@ public class KafkaIssueRepository implements IssueRepository {
 
       final String key = issue.id();
       final String value = issue.printJson();
-      ProducerRecord<String, String> record = new ProducerRecord<>(TOPIC, key, value);
+      final ProducerRecord<String, String> record = new ProducerRecord<>(TOPIC, key, value);
       producer.send(
           record,
           (metadata, exception) -> {
@@ -67,7 +65,8 @@ public class KafkaIssueRepository implements IssueRepository {
             }
           });
 
-      ProducerRecord<String, String> logRecord = new ProducerRecord<>(LOGS_TOPIC, String.format("issue %s added", issue.id()));
+      final ProducerRecord<String, String> logRecord =
+          new ProducerRecord<>(LOGS_TOPIC, String.format("issue %s added", issue.id()));
       producer.send(logRecord);
 
       producer.commitTransaction();

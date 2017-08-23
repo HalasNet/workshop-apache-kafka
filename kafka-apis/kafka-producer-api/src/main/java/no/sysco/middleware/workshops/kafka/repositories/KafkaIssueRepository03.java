@@ -15,14 +15,14 @@ import java.util.Properties;
 /**
  *
  */
-public class KafkaIssueTxRepository implements IssueRepository {
+public class KafkaIssueRepository03 implements IssueRepository {
 
   private static final String TOPIC = "issue-events-03";
   private static final String LOGS_TOPIC = "events-logs";
 
   private final Producer<String, String> producer;
 
-  public KafkaIssueTxRepository() {
+  public KafkaIssueRepository03() {
     try {
       final Properties config = new Properties();
       config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");

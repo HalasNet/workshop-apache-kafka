@@ -16,46 +16,55 @@ import java.util.Properties;
  * Created by jeqo on 13.02.17.
  */
 public class KafkaConsumerLoop implements Runnable {
-    private final KafkaConsumer<String, String> consumer;
-    private final List<String> topics;
-    private final int id;
+  private final KafkaConsumer<String, String> consumer;
+  private final List<String> topics;
+  private final int id;
 
-    public KafkaConsumerLoop(int id,
-                             String groupId,
-                             List<String> topics) {
-        this.id = id;
-        this.topics = topics;
-        Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        this.consumer = new KafkaConsumer<>(props);
-    }
+  KafkaConsumerLoop(int id,
+                    String groupId,
+                    List<String> topics) {
+    Properties config = new Properties();
+    config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+    config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+    config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+    config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+    //Read from earliest
+    config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+    //Disable auto-commit
+    config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+    //Isolation level: read committed records
+    config.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
 
-    @Override
-    public void run() {
-        try {
-            consumer.subscribe(topics);
+    this.id = id;
+    this.topics = topics;
+    this.consumer = new KafkaConsumer<>(config);
+  }
 
-            while (true) {
-                ConsumerRecords<String, String> records = consumer.poll(Long.MAX_VALUE);
-                for (ConsumerRecord<String, String> record : records) {
-                    Map<String, Object> data = new HashMap<>();
-                    data.put("partition", record.partition());
-                    data.put("offset", record.offset());
-                    data.put("value", record.value());
-                    System.out.println(this.id + ": " + data);
-                }
-            }
-        } catch (WakeupException e) {
-            System.out.println("Shutting down");
-        } finally {
-            consumer.close();
+  @Override
+  public void run() {
+    try {
+      consumer.subscribe(topics);
+
+      while (true) {
+        ConsumerRecords<String, String> records = consumer.poll(Long.MAX_VALUE);
+        for (ConsumerRecord<String, String> record : records) {
+          Map<String, Object> data = new HashMap<>();
+          data.put("partition", record.partition());
+          data.put("offset", record.offset());
+          data.put("key", record.key());
+          data.put("value", record.value());
+          System.out.printf("id => %d -- metadata => %s%n", this.id, data);
+          consumer.commitSync();
         }
+      }
+    } catch (WakeupException e) {
+      System.out.println("Shutting down");
+    } finally {
+      consumer.close();
     }
+  }
 
-    public void shutdown() {
-        consumer.wakeup();
-    }
+  void shutdown() {
+    consumer.wakeup();
+  }
 }
