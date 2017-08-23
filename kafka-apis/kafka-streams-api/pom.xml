@@ -2,14 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>kafka-apis</artifactId>
-        <groupId>no.sysco.middleware.workshops</groupId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>no.sysco.middleware.workshops</groupId>
+        <artifactId>kafka-apis</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
     <artifactId>kafka-streams-api</artifactId>
+
     <build>
         <plugins>
             <plugin>
