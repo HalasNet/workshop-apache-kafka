@@ -10,14 +10,12 @@ import org.apache.avro.specific.SpecificData;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 2019255495717745104L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AddIssueCommandRecord\",\"namespace\":\"no.sysco.middleware.workshops.kafka.schema.issue.command\",\"fields\":[{\"name\":\"correlation_id\",\"type\":\"string\"},{\"name\":\"title\",\"type\":\"string\"},{\"name\":\"descripcion\",\"type\":[\"string\",\"null\"]},{\"name\":\"type\",\"type\":\"string\"},{\"name\":\"executed_by\",\"type\":\"string\"}]}");
+  private static final long serialVersionUID = 5535613579814721106L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AddIssueCommandRecord\",\"namespace\":\"no.sysco.middleware.workshops.kafka.schema.issue.command\",\"fields\":[{\"name\":\"title\",\"type\":\"string\"},{\"name\":\"descripcion\",\"type\":[\"string\",\"null\"]},{\"name\":\"type\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
-  @Deprecated public java.lang.CharSequence correlation_id;
   @Deprecated public java.lang.CharSequence title;
   @Deprecated public java.lang.CharSequence descripcion;
   @Deprecated public java.lang.CharSequence type;
-  @Deprecated public java.lang.CharSequence executed_by;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -28,29 +26,23 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
 
   /**
    * All-args constructor.
-   * @param correlation_id The new value for correlation_id
    * @param title The new value for title
    * @param descripcion The new value for descripcion
    * @param type The new value for type
-   * @param executed_by The new value for executed_by
    */
-  public AddIssueCommandRecord(java.lang.CharSequence correlation_id, java.lang.CharSequence title, java.lang.CharSequence descripcion, java.lang.CharSequence type, java.lang.CharSequence executed_by) {
-    this.correlation_id = correlation_id;
+  public AddIssueCommandRecord(java.lang.CharSequence title, java.lang.CharSequence descripcion, java.lang.CharSequence type) {
     this.title = title;
     this.descripcion = descripcion;
     this.type = type;
-    this.executed_by = executed_by;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
   // Used by DatumWriter.  Applications should not call.
   public java.lang.Object get(int field$) {
     switch (field$) {
-    case 0: return correlation_id;
-    case 1: return title;
-    case 2: return descripcion;
-    case 3: return type;
-    case 4: return executed_by;
+    case 0: return title;
+    case 1: return descripcion;
+    case 2: return type;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -59,29 +51,11 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
   @SuppressWarnings(value="unchecked")
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
-    case 0: correlation_id = (java.lang.CharSequence)value$; break;
-    case 1: title = (java.lang.CharSequence)value$; break;
-    case 2: descripcion = (java.lang.CharSequence)value$; break;
-    case 3: type = (java.lang.CharSequence)value$; break;
-    case 4: executed_by = (java.lang.CharSequence)value$; break;
+    case 0: title = (java.lang.CharSequence)value$; break;
+    case 1: descripcion = (java.lang.CharSequence)value$; break;
+    case 2: type = (java.lang.CharSequence)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
-  }
-
-  /**
-   * Gets the value of the 'correlation_id' field.
-   * @return The value of the 'correlation_id' field.
-   */
-  public java.lang.CharSequence getCorrelationId() {
-    return correlation_id;
-  }
-
-  /**
-   * Sets the value of the 'correlation_id' field.
-   * @param value the value to set.
-   */
-  public void setCorrelationId(java.lang.CharSequence value) {
-    this.correlation_id = value;
   }
 
   /**
@@ -133,22 +107,6 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
   }
 
   /**
-   * Gets the value of the 'executed_by' field.
-   * @return The value of the 'executed_by' field.
-   */
-  public java.lang.CharSequence getExecutedBy() {
-    return executed_by;
-  }
-
-  /**
-   * Sets the value of the 'executed_by' field.
-   * @param value the value to set.
-   */
-  public void setExecutedBy(java.lang.CharSequence value) {
-    this.executed_by = value;
-  }
-
-  /**
    * Creates a new AddIssueCommandRecord RecordBuilder.
    * @return A new AddIssueCommandRecord RecordBuilder
    */
@@ -180,11 +138,9 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<AddIssueCommandRecord>
     implements org.apache.avro.data.RecordBuilder<AddIssueCommandRecord> {
 
-    private java.lang.CharSequence correlation_id;
     private java.lang.CharSequence title;
     private java.lang.CharSequence descripcion;
     private java.lang.CharSequence type;
-    private java.lang.CharSequence executed_by;
 
     /** Creates a new Builder */
     private Builder() {
@@ -197,25 +153,17 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
      */
     private Builder(no.sysco.middleware.workshops.kafka.schema.issue.command.AddIssueCommandRecord.Builder other) {
       super(other);
-      if (isValidValue(fields()[0], other.correlation_id)) {
-        this.correlation_id = data().deepCopy(fields()[0].schema(), other.correlation_id);
+      if (isValidValue(fields()[0], other.title)) {
+        this.title = data().deepCopy(fields()[0].schema(), other.title);
         fieldSetFlags()[0] = true;
       }
-      if (isValidValue(fields()[1], other.title)) {
-        this.title = data().deepCopy(fields()[1].schema(), other.title);
+      if (isValidValue(fields()[1], other.descripcion)) {
+        this.descripcion = data().deepCopy(fields()[1].schema(), other.descripcion);
         fieldSetFlags()[1] = true;
       }
-      if (isValidValue(fields()[2], other.descripcion)) {
-        this.descripcion = data().deepCopy(fields()[2].schema(), other.descripcion);
+      if (isValidValue(fields()[2], other.type)) {
+        this.type = data().deepCopy(fields()[2].schema(), other.type);
         fieldSetFlags()[2] = true;
-      }
-      if (isValidValue(fields()[3], other.type)) {
-        this.type = data().deepCopy(fields()[3].schema(), other.type);
-        fieldSetFlags()[3] = true;
-      }
-      if (isValidValue(fields()[4], other.executed_by)) {
-        this.executed_by = data().deepCopy(fields()[4].schema(), other.executed_by);
-        fieldSetFlags()[4] = true;
       }
     }
 
@@ -225,65 +173,18 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
      */
     private Builder(no.sysco.middleware.workshops.kafka.schema.issue.command.AddIssueCommandRecord other) {
             super(SCHEMA$);
-      if (isValidValue(fields()[0], other.correlation_id)) {
-        this.correlation_id = data().deepCopy(fields()[0].schema(), other.correlation_id);
+      if (isValidValue(fields()[0], other.title)) {
+        this.title = data().deepCopy(fields()[0].schema(), other.title);
         fieldSetFlags()[0] = true;
       }
-      if (isValidValue(fields()[1], other.title)) {
-        this.title = data().deepCopy(fields()[1].schema(), other.title);
+      if (isValidValue(fields()[1], other.descripcion)) {
+        this.descripcion = data().deepCopy(fields()[1].schema(), other.descripcion);
         fieldSetFlags()[1] = true;
       }
-      if (isValidValue(fields()[2], other.descripcion)) {
-        this.descripcion = data().deepCopy(fields()[2].schema(), other.descripcion);
+      if (isValidValue(fields()[2], other.type)) {
+        this.type = data().deepCopy(fields()[2].schema(), other.type);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.type)) {
-        this.type = data().deepCopy(fields()[3].schema(), other.type);
-        fieldSetFlags()[3] = true;
-      }
-      if (isValidValue(fields()[4], other.executed_by)) {
-        this.executed_by = data().deepCopy(fields()[4].schema(), other.executed_by);
-        fieldSetFlags()[4] = true;
-      }
-    }
-
-    /**
-      * Gets the value of the 'correlation_id' field.
-      * @return The value.
-      */
-    public java.lang.CharSequence getCorrelationId() {
-      return correlation_id;
-    }
-
-    /**
-      * Sets the value of the 'correlation_id' field.
-      * @param value The value of 'correlation_id'.
-      * @return This builder.
-      */
-    public no.sysco.middleware.workshops.kafka.schema.issue.command.AddIssueCommandRecord.Builder setCorrelationId(java.lang.CharSequence value) {
-      validate(fields()[0], value);
-      this.correlation_id = value;
-      fieldSetFlags()[0] = true;
-      return this;
-    }
-
-    /**
-      * Checks whether the 'correlation_id' field has been set.
-      * @return True if the 'correlation_id' field has been set, false otherwise.
-      */
-    public boolean hasCorrelationId() {
-      return fieldSetFlags()[0];
-    }
-
-
-    /**
-      * Clears the value of the 'correlation_id' field.
-      * @return This builder.
-      */
-    public no.sysco.middleware.workshops.kafka.schema.issue.command.AddIssueCommandRecord.Builder clearCorrelationId() {
-      correlation_id = null;
-      fieldSetFlags()[0] = false;
-      return this;
     }
 
     /**
@@ -300,9 +201,9 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
       * @return This builder.
       */
     public no.sysco.middleware.workshops.kafka.schema.issue.command.AddIssueCommandRecord.Builder setTitle(java.lang.CharSequence value) {
-      validate(fields()[1], value);
+      validate(fields()[0], value);
       this.title = value;
-      fieldSetFlags()[1] = true;
+      fieldSetFlags()[0] = true;
       return this;
     }
 
@@ -311,7 +212,7 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
       * @return True if the 'title' field has been set, false otherwise.
       */
     public boolean hasTitle() {
-      return fieldSetFlags()[1];
+      return fieldSetFlags()[0];
     }
 
 
@@ -321,7 +222,7 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
       */
     public no.sysco.middleware.workshops.kafka.schema.issue.command.AddIssueCommandRecord.Builder clearTitle() {
       title = null;
-      fieldSetFlags()[1] = false;
+      fieldSetFlags()[0] = false;
       return this;
     }
 
@@ -339,9 +240,9 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
       * @return This builder.
       */
     public no.sysco.middleware.workshops.kafka.schema.issue.command.AddIssueCommandRecord.Builder setDescripcion(java.lang.CharSequence value) {
-      validate(fields()[2], value);
+      validate(fields()[1], value);
       this.descripcion = value;
-      fieldSetFlags()[2] = true;
+      fieldSetFlags()[1] = true;
       return this;
     }
 
@@ -350,7 +251,7 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
       * @return True if the 'descripcion' field has been set, false otherwise.
       */
     public boolean hasDescripcion() {
-      return fieldSetFlags()[2];
+      return fieldSetFlags()[1];
     }
 
 
@@ -360,7 +261,7 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
       */
     public no.sysco.middleware.workshops.kafka.schema.issue.command.AddIssueCommandRecord.Builder clearDescripcion() {
       descripcion = null;
-      fieldSetFlags()[2] = false;
+      fieldSetFlags()[1] = false;
       return this;
     }
 
@@ -378,9 +279,9 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
       * @return This builder.
       */
     public no.sysco.middleware.workshops.kafka.schema.issue.command.AddIssueCommandRecord.Builder setType(java.lang.CharSequence value) {
-      validate(fields()[3], value);
+      validate(fields()[2], value);
       this.type = value;
-      fieldSetFlags()[3] = true;
+      fieldSetFlags()[2] = true;
       return this;
     }
 
@@ -389,7 +290,7 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
       * @return True if the 'type' field has been set, false otherwise.
       */
     public boolean hasType() {
-      return fieldSetFlags()[3];
+      return fieldSetFlags()[2];
     }
 
 
@@ -399,46 +300,7 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
       */
     public no.sysco.middleware.workshops.kafka.schema.issue.command.AddIssueCommandRecord.Builder clearType() {
       type = null;
-      fieldSetFlags()[3] = false;
-      return this;
-    }
-
-    /**
-      * Gets the value of the 'executed_by' field.
-      * @return The value.
-      */
-    public java.lang.CharSequence getExecutedBy() {
-      return executed_by;
-    }
-
-    /**
-      * Sets the value of the 'executed_by' field.
-      * @param value The value of 'executed_by'.
-      * @return This builder.
-      */
-    public no.sysco.middleware.workshops.kafka.schema.issue.command.AddIssueCommandRecord.Builder setExecutedBy(java.lang.CharSequence value) {
-      validate(fields()[4], value);
-      this.executed_by = value;
-      fieldSetFlags()[4] = true;
-      return this;
-    }
-
-    /**
-      * Checks whether the 'executed_by' field has been set.
-      * @return True if the 'executed_by' field has been set, false otherwise.
-      */
-    public boolean hasExecutedBy() {
-      return fieldSetFlags()[4];
-    }
-
-
-    /**
-      * Clears the value of the 'executed_by' field.
-      * @return This builder.
-      */
-    public no.sysco.middleware.workshops.kafka.schema.issue.command.AddIssueCommandRecord.Builder clearExecutedBy() {
-      executed_by = null;
-      fieldSetFlags()[4] = false;
+      fieldSetFlags()[2] = false;
       return this;
     }
 
@@ -446,11 +308,9 @@ public class AddIssueCommandRecord extends org.apache.avro.specific.SpecificReco
     public AddIssueCommandRecord build() {
       try {
         AddIssueCommandRecord record = new AddIssueCommandRecord();
-        record.correlation_id = fieldSetFlags()[0] ? this.correlation_id : (java.lang.CharSequence) defaultValue(fields()[0]);
-        record.title = fieldSetFlags()[1] ? this.title : (java.lang.CharSequence) defaultValue(fields()[1]);
-        record.descripcion = fieldSetFlags()[2] ? this.descripcion : (java.lang.CharSequence) defaultValue(fields()[2]);
-        record.type = fieldSetFlags()[3] ? this.type : (java.lang.CharSequence) defaultValue(fields()[3]);
-        record.executed_by = fieldSetFlags()[4] ? this.executed_by : (java.lang.CharSequence) defaultValue(fields()[4]);
+        record.title = fieldSetFlags()[0] ? this.title : (java.lang.CharSequence) defaultValue(fields()[0]);
+        record.descripcion = fieldSetFlags()[1] ? this.descripcion : (java.lang.CharSequence) defaultValue(fields()[1]);
+        record.type = fieldSetFlags()[2] ? this.type : (java.lang.CharSequence) defaultValue(fields()[2]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

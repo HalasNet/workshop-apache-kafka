@@ -3,40 +3,40 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package no.sysco.middleware.workshops.kafka.schema.issue.event;
+package no.sysco.middleware.workshops.kafka.schema.issue.command;
 
 import org.apache.avro.specific.SpecificData;
 
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
-public class IssueEventKeyRecord extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 1649884568360274191L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"IssueEventKeyRecord\",\"namespace\":\"no.sysco.middleware.workshops.kafka.schema.issue.event\",\"fields\":[{\"name\":\"correlation_id\",\"type\":\"string\"},{\"name\":\"executed_by\",\"type\":\"string\"},{\"name\":\"executed_at\",\"type\":\"long\"},{\"name\":\"event\",\"type\":{\"type\":\"enum\",\"name\":\"EventEnum\",\"symbols\":[\"ADDED\"]}}]}");
+public class IssueCommandKeyRecord extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
+  private static final long serialVersionUID = -316522229987731804L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"IssueCommandKeyRecord\",\"namespace\":\"no.sysco.middleware.workshops.kafka.schema.issue.command\",\"fields\":[{\"name\":\"correlation_id\",\"type\":\"string\"},{\"name\":\"executed_by\",\"type\":\"string\"},{\"name\":\"executed_at\",\"type\":\"long\"},{\"name\":\"command\",\"type\":{\"type\":\"enum\",\"name\":\"CommandEnum\",\"symbols\":[\"ADD\"]}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public java.lang.CharSequence correlation_id;
   @Deprecated public java.lang.CharSequence executed_by;
   @Deprecated public long executed_at;
-  @Deprecated public no.sysco.middleware.workshops.kafka.schema.issue.event.EventEnum event;
+  @Deprecated public no.sysco.middleware.workshops.kafka.schema.issue.command.CommandEnum command;
 
   /**
    * Default constructor.  Note that this does not initialize fields
    * to their default values from the schema.  If that is desired then
    * one should use <code>newBuilder()</code>.
    */
-  public IssueEventKeyRecord() {}
+  public IssueCommandKeyRecord() {}
 
   /**
    * All-args constructor.
    * @param correlation_id The new value for correlation_id
    * @param executed_by The new value for executed_by
    * @param executed_at The new value for executed_at
-   * @param event The new value for event
+   * @param command The new value for command
    */
-  public IssueEventKeyRecord(java.lang.CharSequence correlation_id, java.lang.CharSequence executed_by, java.lang.Long executed_at, no.sysco.middleware.workshops.kafka.schema.issue.event.EventEnum event) {
+  public IssueCommandKeyRecord(java.lang.CharSequence correlation_id, java.lang.CharSequence executed_by, java.lang.Long executed_at, no.sysco.middleware.workshops.kafka.schema.issue.command.CommandEnum command) {
     this.correlation_id = correlation_id;
     this.executed_by = executed_by;
     this.executed_at = executed_at;
-    this.event = event;
+    this.command = command;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
@@ -46,7 +46,7 @@ public class IssueEventKeyRecord extends org.apache.avro.specific.SpecificRecord
     case 0: return correlation_id;
     case 1: return executed_by;
     case 2: return executed_at;
-    case 3: return event;
+    case 3: return command;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -58,7 +58,7 @@ public class IssueEventKeyRecord extends org.apache.avro.specific.SpecificRecord
     case 0: correlation_id = (java.lang.CharSequence)value$; break;
     case 1: executed_by = (java.lang.CharSequence)value$; break;
     case 2: executed_at = (java.lang.Long)value$; break;
-    case 3: event = (no.sysco.middleware.workshops.kafka.schema.issue.event.EventEnum)value$; break;
+    case 3: command = (no.sysco.middleware.workshops.kafka.schema.issue.command.CommandEnum)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -112,57 +112,57 @@ public class IssueEventKeyRecord extends org.apache.avro.specific.SpecificRecord
   }
 
   /**
-   * Gets the value of the 'event' field.
-   * @return The value of the 'event' field.
+   * Gets the value of the 'command' field.
+   * @return The value of the 'command' field.
    */
-  public no.sysco.middleware.workshops.kafka.schema.issue.event.EventEnum getEvent() {
-    return event;
+  public no.sysco.middleware.workshops.kafka.schema.issue.command.CommandEnum getCommand() {
+    return command;
   }
 
   /**
-   * Sets the value of the 'event' field.
+   * Sets the value of the 'command' field.
    * @param value the value to set.
    */
-  public void setEvent(no.sysco.middleware.workshops.kafka.schema.issue.event.EventEnum value) {
-    this.event = value;
+  public void setCommand(no.sysco.middleware.workshops.kafka.schema.issue.command.CommandEnum value) {
+    this.command = value;
   }
 
   /**
-   * Creates a new IssueEventKeyRecord RecordBuilder.
-   * @return A new IssueEventKeyRecord RecordBuilder
+   * Creates a new IssueCommandKeyRecord RecordBuilder.
+   * @return A new IssueCommandKeyRecord RecordBuilder
    */
-  public static no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder newBuilder() {
-    return new no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder();
+  public static no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder newBuilder() {
+    return new no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder();
   }
 
   /**
-   * Creates a new IssueEventKeyRecord RecordBuilder by copying an existing Builder.
+   * Creates a new IssueCommandKeyRecord RecordBuilder by copying an existing Builder.
    * @param other The existing builder to copy.
-   * @return A new IssueEventKeyRecord RecordBuilder
+   * @return A new IssueCommandKeyRecord RecordBuilder
    */
-  public static no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder newBuilder(no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder other) {
-    return new no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder(other);
+  public static no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder newBuilder(no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder other) {
+    return new no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder(other);
   }
 
   /**
-   * Creates a new IssueEventKeyRecord RecordBuilder by copying an existing IssueEventKeyRecord instance.
+   * Creates a new IssueCommandKeyRecord RecordBuilder by copying an existing IssueCommandKeyRecord instance.
    * @param other The existing instance to copy.
-   * @return A new IssueEventKeyRecord RecordBuilder
+   * @return A new IssueCommandKeyRecord RecordBuilder
    */
-  public static no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder newBuilder(no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord other) {
-    return new no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder(other);
+  public static no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder newBuilder(no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord other) {
+    return new no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder(other);
   }
 
   /**
-   * RecordBuilder for IssueEventKeyRecord instances.
+   * RecordBuilder for IssueCommandKeyRecord instances.
    */
-  public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<IssueEventKeyRecord>
-    implements org.apache.avro.data.RecordBuilder<IssueEventKeyRecord> {
+  public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<IssueCommandKeyRecord>
+    implements org.apache.avro.data.RecordBuilder<IssueCommandKeyRecord> {
 
     private java.lang.CharSequence correlation_id;
     private java.lang.CharSequence executed_by;
     private long executed_at;
-    private no.sysco.middleware.workshops.kafka.schema.issue.event.EventEnum event;
+    private no.sysco.middleware.workshops.kafka.schema.issue.command.CommandEnum command;
 
     /** Creates a new Builder */
     private Builder() {
@@ -173,7 +173,7 @@ public class IssueEventKeyRecord extends org.apache.avro.specific.SpecificRecord
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder other) {
+    private Builder(no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.correlation_id)) {
         this.correlation_id = data().deepCopy(fields()[0].schema(), other.correlation_id);
@@ -187,17 +187,17 @@ public class IssueEventKeyRecord extends org.apache.avro.specific.SpecificRecord
         this.executed_at = data().deepCopy(fields()[2].schema(), other.executed_at);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.event)) {
-        this.event = data().deepCopy(fields()[3].schema(), other.event);
+      if (isValidValue(fields()[3], other.command)) {
+        this.command = data().deepCopy(fields()[3].schema(), other.command);
         fieldSetFlags()[3] = true;
       }
     }
 
     /**
-     * Creates a Builder by copying an existing IssueEventKeyRecord instance
+     * Creates a Builder by copying an existing IssueCommandKeyRecord instance
      * @param other The existing instance to copy.
      */
-    private Builder(no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord other) {
+    private Builder(no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord other) {
             super(SCHEMA$);
       if (isValidValue(fields()[0], other.correlation_id)) {
         this.correlation_id = data().deepCopy(fields()[0].schema(), other.correlation_id);
@@ -211,8 +211,8 @@ public class IssueEventKeyRecord extends org.apache.avro.specific.SpecificRecord
         this.executed_at = data().deepCopy(fields()[2].schema(), other.executed_at);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.event)) {
-        this.event = data().deepCopy(fields()[3].schema(), other.event);
+      if (isValidValue(fields()[3], other.command)) {
+        this.command = data().deepCopy(fields()[3].schema(), other.command);
         fieldSetFlags()[3] = true;
       }
     }
@@ -230,7 +230,7 @@ public class IssueEventKeyRecord extends org.apache.avro.specific.SpecificRecord
       * @param value The value of 'correlation_id'.
       * @return This builder.
       */
-    public no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder setCorrelationId(java.lang.CharSequence value) {
+    public no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder setCorrelationId(java.lang.CharSequence value) {
       validate(fields()[0], value);
       this.correlation_id = value;
       fieldSetFlags()[0] = true;
@@ -250,7 +250,7 @@ public class IssueEventKeyRecord extends org.apache.avro.specific.SpecificRecord
       * Clears the value of the 'correlation_id' field.
       * @return This builder.
       */
-    public no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder clearCorrelationId() {
+    public no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder clearCorrelationId() {
       correlation_id = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -269,7 +269,7 @@ public class IssueEventKeyRecord extends org.apache.avro.specific.SpecificRecord
       * @param value The value of 'executed_by'.
       * @return This builder.
       */
-    public no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder setExecutedBy(java.lang.CharSequence value) {
+    public no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder setExecutedBy(java.lang.CharSequence value) {
       validate(fields()[1], value);
       this.executed_by = value;
       fieldSetFlags()[1] = true;
@@ -289,7 +289,7 @@ public class IssueEventKeyRecord extends org.apache.avro.specific.SpecificRecord
       * Clears the value of the 'executed_by' field.
       * @return This builder.
       */
-    public no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder clearExecutedBy() {
+    public no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder clearExecutedBy() {
       executed_by = null;
       fieldSetFlags()[1] = false;
       return this;
@@ -308,7 +308,7 @@ public class IssueEventKeyRecord extends org.apache.avro.specific.SpecificRecord
       * @param value The value of 'executed_at'.
       * @return This builder.
       */
-    public no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder setExecutedAt(long value) {
+    public no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder setExecutedAt(long value) {
       validate(fields()[2], value);
       this.executed_at = value;
       fieldSetFlags()[2] = true;
@@ -328,58 +328,58 @@ public class IssueEventKeyRecord extends org.apache.avro.specific.SpecificRecord
       * Clears the value of the 'executed_at' field.
       * @return This builder.
       */
-    public no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder clearExecutedAt() {
+    public no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder clearExecutedAt() {
       fieldSetFlags()[2] = false;
       return this;
     }
 
     /**
-      * Gets the value of the 'event' field.
+      * Gets the value of the 'command' field.
       * @return The value.
       */
-    public no.sysco.middleware.workshops.kafka.schema.issue.event.EventEnum getEvent() {
-      return event;
+    public no.sysco.middleware.workshops.kafka.schema.issue.command.CommandEnum getCommand() {
+      return command;
     }
 
     /**
-      * Sets the value of the 'event' field.
-      * @param value The value of 'event'.
+      * Sets the value of the 'command' field.
+      * @param value The value of 'command'.
       * @return This builder.
       */
-    public no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder setEvent(no.sysco.middleware.workshops.kafka.schema.issue.event.EventEnum value) {
+    public no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder setCommand(no.sysco.middleware.workshops.kafka.schema.issue.command.CommandEnum value) {
       validate(fields()[3], value);
-      this.event = value;
+      this.command = value;
       fieldSetFlags()[3] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'event' field has been set.
-      * @return True if the 'event' field has been set, false otherwise.
+      * Checks whether the 'command' field has been set.
+      * @return True if the 'command' field has been set, false otherwise.
       */
-    public boolean hasEvent() {
+    public boolean hasCommand() {
       return fieldSetFlags()[3];
     }
 
 
     /**
-      * Clears the value of the 'event' field.
+      * Clears the value of the 'command' field.
       * @return This builder.
       */
-    public no.sysco.middleware.workshops.kafka.schema.issue.event.IssueEventKeyRecord.Builder clearEvent() {
-      event = null;
+    public no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord.Builder clearCommand() {
+      command = null;
       fieldSetFlags()[3] = false;
       return this;
     }
 
     @Override
-    public IssueEventKeyRecord build() {
+    public IssueCommandKeyRecord build() {
       try {
-        IssueEventKeyRecord record = new IssueEventKeyRecord();
+        IssueCommandKeyRecord record = new IssueCommandKeyRecord();
         record.correlation_id = fieldSetFlags()[0] ? this.correlation_id : (java.lang.CharSequence) defaultValue(fields()[0]);
         record.executed_by = fieldSetFlags()[1] ? this.executed_by : (java.lang.CharSequence) defaultValue(fields()[1]);
         record.executed_at = fieldSetFlags()[2] ? this.executed_at : (java.lang.Long) defaultValue(fields()[2]);
-        record.event = fieldSetFlags()[3] ? this.event : (no.sysco.middleware.workshops.kafka.schema.issue.event.EventEnum) defaultValue(fields()[3]);
+        record.command = fieldSetFlags()[3] ? this.command : (no.sysco.middleware.workshops.kafka.schema.issue.command.CommandEnum) defaultValue(fields()[3]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

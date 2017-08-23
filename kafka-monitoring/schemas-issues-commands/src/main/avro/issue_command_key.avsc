@@ -1,7 +1,7 @@
 {
-  "namespace": "no.sysco.middleware.workshops.kafka.schema.issue.event",
+  "namespace": "no.sysco.middleware.workshops.kafka.schema.issue.command",
   "type": "record",
-  "name": "IssueEventKeyRecord",
+  "name": "IssueCommandKeyRecord",
   "fields": [
     {
       "name": "correlation_id",
@@ -16,12 +16,12 @@
       "type": "long"
     },
     {
-      "name": "event",
+      "name": "command",
       "type": {
-        "name": "EventEnum",
+        "name": "CommandEnum",
         "type": "enum",
         "symbols": [
-          "ADDED"
+          "ADD"
         ]
       }
     }

@@ -4,10 +4,6 @@
   "name": "AddIssueCommandRecord",
   "fields": [
     {
-      "name": "correlation_id",
-      "type": "string"
-    },
-    {
       "name": "title",
       "type": "string"
     },
@@ -17,10 +13,6 @@
     },
     {
       "name": "type",
-      "type": "string"
-    },
-    {
-      "name": "executed_by",
       "type": "string"
     }
   ]

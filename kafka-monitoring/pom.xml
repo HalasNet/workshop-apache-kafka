@@ -20,5 +20,6 @@
         <module>issues-events-processor</module>
         <module>schemas-issues-commands</module>
         <module>schemas-issues-events</module>
+        <module>schemas-common</module>
     </modules>
 </project>
