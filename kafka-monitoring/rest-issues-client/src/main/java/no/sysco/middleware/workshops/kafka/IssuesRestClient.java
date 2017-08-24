@@ -1,10 +1,12 @@
 package no.sysco.middleware.workshops.kafka;
 
+import io.opentracing.Tracer;
+import io.opentracing.contrib.apache.http.client.TracingHttpClientBuilder;
+import io.opentracing.util.GlobalTracer;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,11 +19,27 @@ public class IssuesRestClient {
 
   public static void main(String[] args) {
     try {
+      Tracer tracer =
+          new com.uber.jaeger.Configuration(
+              "issues-http-client",
+              new com.uber.jaeger.Configuration.SamplerConfiguration("const", 1),
+              new com.uber.jaeger.Configuration.ReporterConfiguration(
+                  true,  // logSpans
+                  "docker-vm",
+                  6831,
+                  1000,   // flush interval in milliseconds
+                  10000)  /*max buffered Spans*/)
+              .getTracer();
+
+      GlobalTracer.register(tracer);
 
       final HttpClient httpClient =
-          HttpClientBuilder.create().build();
-      HttpPost postRequest = new HttpPost(
-          "http://localhost:8901/commands/issues");
+          new TracingHttpClientBuilder()
+              .build();
+      //Wihout tracing
+      //HttpClientBuilder.create().build();
+
+      HttpPost postRequest = new HttpPost("http://localhost:8901/commands/issues");
 
       StringEntity input = new StringEntity("{\"type\": \"BUG\", \"title\": \"Bug 2\", \"description\": \"...\"}");
       input.setContentType("application/json");
@@ -42,7 +60,9 @@ public class IssuesRestClient {
       while ((output = br.readLine()) != null) {
         System.out.println(output);
       }
-    } catch (IOException e) {
+
+      Thread.sleep(10000L);
+    } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }
 

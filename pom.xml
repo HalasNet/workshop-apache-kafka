@@ -65,6 +65,31 @@
                 <artifactId>rest</artifactId>
                 <version>${elasticsearch.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-kafka-client</artifactId>
+                <version>0.0.4-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-elasticsearch-client</artifactId>
+                <version>0.0.3</version>
+            </dependency>
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-apache-httpclient</artifactId>
+                <version>0.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>io.opentracing.contrib.dropwizard</groupId>
+                <artifactId>dropwizard-opentracing</artifactId>
+                <version>0.2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.uber.jaeger</groupId>
+                <artifactId>jaeger-core</artifactId>
+                <version>0.20.6</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
