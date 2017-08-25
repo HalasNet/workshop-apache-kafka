@@ -17,7 +17,7 @@ import java.util.Properties;
  */
 public class KafkaIssueTxRepository implements IssueRepository {
 
-  private static final String TOPIC = "issue-events-02";
+  private static final String TOPIC = "issue-events-03";
   private static final String LOGS_TOPIC = "events-logs";
 
   private final Producer<String, String> producer;

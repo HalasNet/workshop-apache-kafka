@@ -1,11 +1,11 @@
 package no.sysco.middleware.workshops.kafka.messaging;
 
+import io.opentracing.ActiveSpan;
 import io.opentracing.References;
-import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
-import io.opentracing.contrib.kafka.TracingKafkaConsumer;
 import io.opentracing.contrib.kafka.TracingKafkaUtils;
+import io.opentracing.util.GlobalTracer;
 import no.sysco.middleware.workshops.kafka.repositories.KafkaIssueEventRepository;
 import no.sysco.middleware.workshops.kafka.schema.issue.command.AddIssueCommandRecord;
 import no.sysco.middleware.workshops.kafka.schema.issue.command.IssueCommandKeyRecord;
@@ -18,8 +18,10 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
+import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +56,9 @@ public class KafkaIssueCommandHandler {
                 10000)  /*max buffered Spans*/)
             .getTracer();
 
-    final KafkaIssueEventRepository issueEventRepository = new KafkaIssueEventRepository(tracer);
+    GlobalTracer.register(tracer);
+
+    final KafkaIssueEventRepository issueEventRepository = new KafkaIssueEventRepository();
 
     final Properties config = new Properties();
     config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
@@ -69,13 +73,15 @@ public class KafkaIssueCommandHandler {
     config.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
 
     try (KafkaConsumer<byte[], byte[]> consumer = new KafkaConsumer<>(config)) {
-      TracingKafkaConsumer<byte[], byte[]> tracingKafkaConsumer =
-          new TracingKafkaConsumer<>(consumer, tracer);
+      /*TracingKafkaConsumer<byte[], byte[]> tracingKafkaConsumer =
+          new TracingKafkaConsumer<>(consumer, tracer);*/
 
-      tracingKafkaConsumer.subscribe(Collections.singletonList(ISSUES_COMMANDS_TOPIC));
+      consumer.subscribe(Collections.singletonList(ISSUES_COMMANDS_TOPIC));
 
       while (true) {
-        ConsumerRecords<byte[], byte[]> records = tracingKafkaConsumer.poll(Long.MAX_VALUE);
+        final ConsumerRecords<byte[], byte[]> records =
+            consumer.poll(Long.MAX_VALUE);
+
         for (ConsumerRecord<byte[], byte[]> record : records) {
           Map<String, Object> data = new HashMap<>();
           data.put("topic", record.topic());
@@ -83,40 +89,43 @@ public class KafkaIssueCommandHandler {
           data.put("offset", record.offset());
           data.put("key", record.key());
           data.put("value", record.value());
+          for (Header header : record.headers()) {
+            data.put("header", String.format("%s => %s", header.key(), Arrays.toString(header.value())));
+          }
           LOGGER.info("Processing: " + data.toString());
 
           final IssueCommandKeyRecord keyRecord =
               issueCommandKeyRecordDeserializer.deserialize(record.key());
 
-          SpanContext spanContext = TracingKafkaUtils.extract(record.headers(), tracer);
+          SpanContext spanContext = TracingKafkaUtils.extract(record.headers(), GlobalTracer.get());
 
           switch (keyRecord.getCommand()) {
             case ADD:
-              Span span = tracer.buildSpan("issueAddedEvent")
-                  .addReference(References.FOLLOWS_FROM, spanContext)
-                  .startManual();
+              try (ActiveSpan ignored =
+                       tracer
+                           .buildSpan("sendIssueAddedEvent")
+                           .addReference(References.FOLLOWS_FROM, spanContext)
+                           .startActive()) {
 
-              AddIssueCommandRecord addIssueCommandRecord =
-                  addIssueCommandRecordDeserializer.deserialize(record.value());
+                final AddIssueCommandRecord addIssueCommandRecord =
+                    addIssueCommandRecordDeserializer.deserialize(record.value());
 
-              String id = String.format("issue-%s", UUID.randomUUID().toString());
+                final String id = String.format("issue-%s", UUID.randomUUID().toString());
 
-              issueEventRepository.send(
-                  span.context(),
-                  IssueEventKeyRecord.newBuilder()
-                      .setCorrelationId(keyRecord.getCorrelationId())
-                      .setEvent(EventEnum.ADDED)
-                      .setExecutedAt(keyRecord.getExecutedAt())
-                      .setExecutedBy(keyRecord.getExecutedBy())
-                      .build(),
-                  IssueEventRecord.newBuilder()
-                      .setId(id)
-                      .setDescripcion(addIssueCommandRecord.getDescripcion())
-                      .setTitle(addIssueCommandRecord.getTitle())
-                      .setType(addIssueCommandRecord.getType())
-                      .build());
-
-              span.finish();
+                issueEventRepository.send(
+                    IssueEventKeyRecord.newBuilder()
+                        .setCorrelationId(keyRecord.getCorrelationId())
+                        .setEvent(EventEnum.ADDED)
+                        .setExecutedAt(keyRecord.getExecutedAt())
+                        .setExecutedBy(keyRecord.getExecutedBy())
+                        .build(),
+                    IssueEventRecord.newBuilder()
+                        .setId(id)
+                        .setDescripcion(addIssueCommandRecord.getDescripcion())
+                        .setTitle(addIssueCommandRecord.getTitle())
+                        .setType(addIssueCommandRecord.getType())
+                        .build());
+              }
               break;
             default:
               LOGGER.warning("Command not supported");

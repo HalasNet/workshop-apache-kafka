@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class IssueConsumerApp {
   private static final String GROUP_ID ="consumer-group-04";
-  private static final String TOPIC = "issue-events-04";
-  private static final int NUM_CONSUMER_INSTANCES = 1;
+  private static final String TOPIC = "issue-events-03";
+  private static final int NUM_CONSUMER_INSTANCES = 3;
 
   public static void main(String[] args) {
     final ExecutorService executor = Executors.newFixedThreadPool(NUM_CONSUMER_INSTANCES);

@@ -91,8 +91,8 @@ bin/kafka-topics.sh --zookeeper localhost:2181 \
                     --create \
                     --partitions 1 \
                     --replication-factor 3 \
-                    --config min.insync.replicas=3
-                    --topic issue-events-02
+                    --config min.insync.replicas=3 \
+                    --topic issue-events-03
 ```
 
 This will force broker to validate that a record should be stored on 3

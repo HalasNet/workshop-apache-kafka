@@ -1,10 +1,9 @@
 package no.sysco.middleware.workshops.kafka.messaging;
 
+import io.opentracing.ActiveSpan;
 import io.opentracing.References;
-import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
-import io.opentracing.contrib.kafka.TracingKafkaConsumer;
 import io.opentracing.contrib.kafka.TracingKafkaUtils;
 import no.sysco.middleware.workshops.kafka.repositories.ESIssueDocument;
 import no.sysco.middleware.workshops.kafka.repositories.ElasticsearchIssueRepository;
@@ -67,13 +66,13 @@ public class KafkaIssueEventHandler {
     config.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
 
     try (KafkaConsumer<byte[], byte[]> consumer = new KafkaConsumer<>(config)) {
-      TracingKafkaConsumer<byte[], byte[]> tracingKafkaConsumer =
-          new TracingKafkaConsumer<>(consumer, tracer);
+      /*TracingKafkaConsumer<byte[], byte[]> tracingKafkaConsumer =
+          new TracingKafkaConsumer<>(consumer, tracer);*/
 
-      tracingKafkaConsumer.subscribe(Collections.singletonList(ISSUES_EVENTS_TOPIC));
+      consumer.subscribe(Collections.singletonList(ISSUES_EVENTS_TOPIC));
 
       while (true) {
-        ConsumerRecords<byte[], byte[]> records = tracingKafkaConsumer.poll(Long.MAX_VALUE);
+        ConsumerRecords<byte[], byte[]> records = consumer.poll(Long.MAX_VALUE);
         for (ConsumerRecord<byte[], byte[]> record : records) {
           Map<String, Object> data = new HashMap<>();
           data.put("topic", record.topic());
@@ -90,25 +89,25 @@ public class KafkaIssueEventHandler {
 
           switch (keyRecord.getEvent()) {
             case ADDED:
-              Span span = tracer.buildSpan("processIssueAddedEvent")
-                  .addReference(References.FOLLOWS_FROM, spanContext)
-                  .startManual();
+              try (ActiveSpan ignored =
+                       tracer.buildSpan("processIssueAddedEvent")
+                           .addReference(References.FOLLOWS_FROM, spanContext)
+                           .startActive()) {
 
-              IssueEventRecord issueEventRecord =
-                  issueEventRecordDeserializer.deserialize(record.value());
+                IssueEventRecord issueEventRecord =
+                    issueEventRecordDeserializer.deserialize(record.value());
 
-              final ESIssueDocument issueDocument = new ESIssueDocument();
-              issueDocument.setId(issueEventRecord.getId().toString());
-              issueDocument.setTitle(issueEventRecord.getTitle().toString());
-              issueDocument.setDescription(
-                  Optional.ofNullable(issueEventRecord.getDescripcion())
-                      .map(CharSequence::toString)
-                      .orElse(null));
-              issueDocument.setType(issueEventRecord.getType().toString());
+                final ESIssueDocument issueDocument = new ESIssueDocument();
+                issueDocument.setId(issueEventRecord.getId().toString());
+                issueDocument.setTitle(issueEventRecord.getTitle().toString());
+                issueDocument.setDescription(
+                    Optional.ofNullable(issueEventRecord.getDescripcion())
+                        .map(CharSequence::toString)
+                        .orElse(null));
+                issueDocument.setType(issueEventRecord.getType().toString());
 
-              issueRepository.put(span.context(), issueDocument);
-
-              span.finish();
+                issueRepository.put(issueDocument);
+              }
               break;
             default:
               LOGGER.warning("Command not supported");

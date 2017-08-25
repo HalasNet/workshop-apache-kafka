@@ -299,7 +299,7 @@ possible using the same tool:
 Let's go back 3 records:
 
 ```bash
- bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092
+ bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 \
                               --reset-offsets \
                               --group console-consumer-01 \
                               --topic compaction-01 \

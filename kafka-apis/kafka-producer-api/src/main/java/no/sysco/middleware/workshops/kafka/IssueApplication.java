@@ -28,9 +28,9 @@ public class IssueApplication extends Application<IssueConfiguration> {
                   Environment environment)
       throws Exception {
     //final IssueRepository issueRepository = new KafkaIssueRepository();
-    //final IssueRepository issueRepository = new KafkaIssueTxRepository();
+    final IssueRepository issueRepository = new KafkaIssueTxRepository();
     //final IssueRepository issueRepository = new KafkaIssueRepository03();
-    final IssueRepository issueRepository = new KafkaIssueTxRepository04();
+    //final IssueRepository issueRepository = new KafkaIssueTxRepository04();
 
     final IssuesResource issuesResource = new IssuesResource(issueRepository);
 

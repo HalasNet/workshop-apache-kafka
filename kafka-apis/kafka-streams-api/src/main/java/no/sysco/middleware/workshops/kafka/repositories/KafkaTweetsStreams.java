@@ -42,7 +42,7 @@ public class KafkaTweetsStreams {
   //Queryable store names
   private static final String TWEETS_BY_USERNAME = "tweets-by-username-05";
   private static final String HASHTAGS_COUNT = "tweets-hashtags-count-05";
-  private static final String HASHTAG_PER_MINUTE = "tweets-hashtag-per-minute-05";
+  private static final String HASHTAG_PER_MINUTE = "tweets-hashtag-per-minute-06";
   private final KafkaStreams tweetsPerUserStream;
   private final KafkaStreams hashtagsCountStream;
   private final KafkaStreams hashtagPerMinuteStream;

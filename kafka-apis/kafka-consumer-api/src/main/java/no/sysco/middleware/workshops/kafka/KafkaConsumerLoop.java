@@ -54,7 +54,7 @@ public class KafkaConsumerLoop implements Runnable {
           data.put("key", record.key());
           data.put("value", record.value());
           System.out.printf("id => %d -- metadata => %s%n", this.id, data);
-          consumer.commitSync();
+          consumer.commitAsync();
         }
       }
     } catch (WakeupException e) {

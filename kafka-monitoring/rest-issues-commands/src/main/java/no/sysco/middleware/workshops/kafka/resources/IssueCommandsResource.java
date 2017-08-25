@@ -1,6 +1,7 @@
 package no.sysco.middleware.workshops.kafka.resources;
 
-import io.opentracing.Span;
+import io.opentracing.ActiveSpan;
+import io.opentracing.SpanContext;
 import io.opentracing.contrib.dropwizard.DropWizardTracer;
 import no.sysco.middleware.workshops.kafka.repositories.KafkaIssueCommandRepository;
 import no.sysco.middleware.workshops.kafka.representations.AddIssueCommandRepresentation;
@@ -40,18 +41,24 @@ public class IssueCommandsResource {
 
   @POST
   public Response addIssue(@Context Request request, AddIssueCommandRepresentation representation) {
-    Span span = tracer.getSpan(request);
-    final AddIssueCommandRecord addIssueCommandRecord =
-        AddIssueCommandRecord.newBuilder()
-            .setTitle(representation.getTitle())
-            .setDescripcion(representation.getDescription())
-            .setType(representation.getType())
-            .build();
-    issueCommandRepository.sendAddIssueCommand(
-        span.context(),
-        UUID.randomUUID().toString(),
-        USERNAME,
-        addIssueCommandRecord);
-    return Response.ok().build();
+    final SpanContext spanContext = tracer.getSpan(request).context();
+
+    try (ActiveSpan ignored =
+             tracer.getTracer()
+                 .buildSpan("addIssue")
+                 .asChildOf(spanContext)
+                 .startActive()) {
+      final AddIssueCommandRecord addIssueCommandRecord =
+          AddIssueCommandRecord.newBuilder()
+              .setTitle(representation.getTitle())
+              .setDescripcion(representation.getDescription())
+              .setType(representation.getType())
+              .build();
+      issueCommandRepository.sendAddIssueCommand(
+          UUID.randomUUID().toString(),
+          USERNAME,
+          addIssueCommandRecord);
+      return Response.ok().build();
+    }
   }
 }

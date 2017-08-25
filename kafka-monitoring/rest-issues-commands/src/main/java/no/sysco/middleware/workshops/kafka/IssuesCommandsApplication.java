@@ -27,9 +27,7 @@ public class IssuesCommandsApplication extends Application<IssuesCommandsConfigu
   public void run(IssuesCommandsConfiguration restIssuesCommandsConfiguration,
                   Environment environment)
       throws Exception {
-
-
-    Tracer tracer =
+    final Tracer tracer =
         new com.uber.jaeger.Configuration(
             "rest-issues-command-app",
             new com.uber.jaeger.Configuration.SamplerConfiguration("const", 1),
@@ -40,6 +38,8 @@ public class IssuesCommandsApplication extends Application<IssuesCommandsConfigu
                 1000,   // flush interval in milliseconds
                 10000)  /*max buffered Spans*/)
             .getTracer();
+
+    GlobalTracer.register(tracer);
 
     final DropWizardTracer dropWizardTracer = new DropWizardTracer(tracer);
     ServerTracingFeature serverTracingFeature =
@@ -52,7 +52,7 @@ public class IssuesCommandsApplication extends Application<IssuesCommandsConfigu
             .build();
     environment.jersey().register(serverTracingFeature);
 
-    final KafkaIssueCommandRepository issueRepository = new KafkaIssueCommandRepository(tracer);
+    final KafkaIssueCommandRepository issueRepository = new KafkaIssueCommandRepository();
 
     final IssueCommandsResource commandsResource = new IssueCommandsResource(issueRepository, dropWizardTracer);
 

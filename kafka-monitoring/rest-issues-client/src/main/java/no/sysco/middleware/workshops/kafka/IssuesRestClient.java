@@ -1,5 +1,6 @@
 package no.sysco.middleware.workshops.kafka;
 
+import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.apache.http.client.TracingHttpClientBuilder;
 import io.opentracing.util.GlobalTracer;
@@ -39,26 +40,27 @@ public class IssuesRestClient {
       //Wihout tracing
       //HttpClientBuilder.create().build();
 
-      HttpPost postRequest = new HttpPost("http://localhost:8901/commands/issues");
+      try (ActiveSpan ignored = tracer.buildSpan("addIssue").startActive()) {
+        HttpPost postRequest = new HttpPost("http://localhost:8901/commands/issues");
 
-      StringEntity input = new StringEntity("{\"type\": \"BUG\", \"title\": \"Bug 2\", \"description\": \"...\"}");
-      input.setContentType("application/json");
-      postRequest.setEntity(input);
+        StringEntity input = new StringEntity("{\"type\": \"BUG\", \"title\": \"Bug 2\", \"description\": \"...\"}");
+        input.setContentType("application/json");
+        postRequest.setEntity(input);
 
-      HttpResponse response = httpClient.execute(postRequest);
+        HttpResponse response = httpClient.execute(postRequest);
 
-      if (response.getStatusLine().getStatusCode() != 200) {
-        throw new RuntimeException("Failed : HTTP error code : "
-            + response.getStatusLine().getStatusCode());
-      }
+        if (response.getStatusLine().getStatusCode() != 200) {
+          throw new RuntimeException("Failed : HTTP error code : "
+              + response.getStatusLine().getStatusCode());
+        }
 
-      BufferedReader br = new BufferedReader(
-          new InputStreamReader((response.getEntity().getContent())));
-
-      String output;
-      System.out.println("Sent. \n");
-      while ((output = br.readLine()) != null) {
-        System.out.println(output);
+        BufferedReader br = new BufferedReader(
+            new InputStreamReader((response.getEntity().getContent())));
+        String output;
+        System.out.println("Sent. \n");
+        while ((output = br.readLine()) != null) {
+          System.out.println(output);
+        }
       }
 
       Thread.sleep(10000L);
