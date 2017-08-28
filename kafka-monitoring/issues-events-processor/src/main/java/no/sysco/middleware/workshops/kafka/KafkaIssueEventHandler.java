@@ -1,9 +1,10 @@
-package no.sysco.middleware.workshops.kafka.messaging;
+package no.sysco.middleware.workshops.kafka;
 
 import io.opentracing.ActiveSpan;
 import io.opentracing.References;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
+import io.opentracing.contrib.kafka.TracingKafkaConsumer;
 import io.opentracing.contrib.kafka.TracingKafkaUtils;
 import no.sysco.middleware.workshops.kafka.repositories.ESIssueDocument;
 import no.sysco.middleware.workshops.kafka.repositories.ElasticsearchIssueRepository;
@@ -66,13 +67,13 @@ public class KafkaIssueEventHandler {
     config.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
 
     try (KafkaConsumer<byte[], byte[]> consumer = new KafkaConsumer<>(config)) {
-      /*TracingKafkaConsumer<byte[], byte[]> tracingKafkaConsumer =
-          new TracingKafkaConsumer<>(consumer, tracer);*/
+      final TracingKafkaConsumer<byte[], byte[]> tracingKafkaConsumer =
+          new TracingKafkaConsumer<>(consumer, tracer);
 
-      consumer.subscribe(Collections.singletonList(ISSUES_EVENTS_TOPIC));
+      tracingKafkaConsumer.subscribe(Collections.singletonList(ISSUES_EVENTS_TOPIC));
 
       while (true) {
-        ConsumerRecords<byte[], byte[]> records = consumer.poll(Long.MAX_VALUE);
+        ConsumerRecords<byte[], byte[]> records = tracingKafkaConsumer.poll(Long.MAX_VALUE);
         for (ConsumerRecord<byte[], byte[]> record : records) {
           Map<String, Object> data = new HashMap<>();
           data.put("topic", record.topic());
@@ -82,7 +83,8 @@ public class KafkaIssueEventHandler {
           data.put("value", record.value());
           LOGGER.info("Processing: " + data.toString());
 
-          SpanContext spanContext = TracingKafkaUtils.extract(record.headers(), tracer);
+          final SpanContext spanContext =
+              TracingKafkaUtils.extractSpanContext(record.headers(), tracer);
 
           final IssueEventKeyRecord keyRecord =
               issueEventKeyRecordDeserializer.deserialize(record.key());

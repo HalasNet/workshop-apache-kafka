@@ -1,9 +1,10 @@
-package no.sysco.middleware.workshops.kafka.messaging;
+package no.sysco.middleware.workshops.kafka;
 
 import io.opentracing.ActiveSpan;
 import io.opentracing.References;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
+import io.opentracing.contrib.kafka.TracingKafkaConsumer;
 import io.opentracing.contrib.kafka.TracingKafkaUtils;
 import io.opentracing.util.GlobalTracer;
 import no.sysco.middleware.workshops.kafka.repositories.KafkaIssueEventRepository;
@@ -73,14 +74,14 @@ public class KafkaIssueCommandHandler {
     config.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
 
     try (KafkaConsumer<byte[], byte[]> consumer = new KafkaConsumer<>(config)) {
-      /*TracingKafkaConsumer<byte[], byte[]> tracingKafkaConsumer =
-          new TracingKafkaConsumer<>(consumer, tracer);*/
+      TracingKafkaConsumer<byte[], byte[]> tracingKafkaConsumer =
+          new TracingKafkaConsumer<>(consumer, tracer);
 
-      consumer.subscribe(Collections.singletonList(ISSUES_COMMANDS_TOPIC));
+      tracingKafkaConsumer.subscribe(Collections.singletonList(ISSUES_COMMANDS_TOPIC));
 
       while (true) {
         final ConsumerRecords<byte[], byte[]> records =
-            consumer.poll(Long.MAX_VALUE);
+            tracingKafkaConsumer.poll(Long.MAX_VALUE);
 
         for (ConsumerRecord<byte[], byte[]> record : records) {
           Map<String, Object> data = new HashMap<>();
@@ -97,13 +98,13 @@ public class KafkaIssueCommandHandler {
           final IssueCommandKeyRecord keyRecord =
               issueCommandKeyRecordDeserializer.deserialize(record.key());
 
-          SpanContext spanContext = TracingKafkaUtils.extract(record.headers(), GlobalTracer.get());
+          final SpanContext spanContext =
+              TracingKafkaUtils.extractSpanContext(record.headers(), GlobalTracer.get());
 
           switch (keyRecord.getCommand()) {
             case ADD:
               try (ActiveSpan ignored =
-                       tracer
-                           .buildSpan("sendIssueAddedEvent")
+                       tracer.buildSpan("sendIssueAddedEvent")
                            .addReference(References.FOLLOWS_FROM, spanContext)
                            .startActive()) {
 
