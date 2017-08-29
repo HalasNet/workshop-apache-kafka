@@ -37,12 +37,12 @@ public class KafkaTweetsStreams {
   private static final Deserializer<JsonNode> jsonNodeDeserializer = new JsonDeserializer();
   private static final Serde<JsonNode> jsonNodeSerde = Serdes.serdeFrom(jsonNodeSerializer, jsonNodeDeserializer);
   //Topics
-  private static final String TWEETS = "tweets-01";
+  private static final String TWEETS = "tweets";
   private static final String TWEETS_HASHTAGS = "tweets-hashtags";
   //Queryable store names
-  private static final String TWEETS_BY_USERNAME = "tweets-by-username-05";
-  private static final String HASHTAGS_COUNT = "tweets-hashtags-count-05";
-  private static final String HASHTAG_PER_MINUTE = "tweets-hashtag-per-minute-06";
+  private static final String TWEETS_BY_USERNAME = "tweets-by-username";
+  private static final String HASHTAGS_COUNT = "tweets-hashtags-count";
+  private static final String HASHTAG_PER_MINUTE = "tweets-hashtag-per-minute";
   private final KafkaStreams tweetsPerUserStream;
   private final KafkaStreams hashtagsCountStream;
   private final KafkaStreams hashtagPerMinuteStream;
