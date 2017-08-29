@@ -3,3 +3,6 @@ server:
   applicationConnectors:
     - type: http
       port: 8811
+  adminConnectors:
+    - type: http
+      port: 8812
