@@ -51,7 +51,7 @@ public class KafkaIssueCommandHandler {
             new com.uber.jaeger.Configuration.SamplerConfiguration("const", 1),
             new com.uber.jaeger.Configuration.ReporterConfiguration(
                 true,  // logSpans
-                "docker-vm",
+                "localhost",
                 6831,
                 1000,   // flush interval in milliseconds
                 10000)  /*max buffered Spans*/)
