@@ -6,6 +6,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.HashMap;
@@ -15,24 +16,24 @@ import java.util.Properties;
 /**
  *
  */
-public class KafkaIssueRepository03 implements IssueRepository {
+public class KafkaIssueTxWithoutCommitRepository implements IssueRepository {
 
-  private static final String TOPIC = "issue-events-03";
+  private static final String TOPIC = "issue-events";
   private static final String LOGS_TOPIC = "events-logs";
 
-  private final Producer<String, String> producer;
+  private final Producer<Integer, String> producer;
 
-  public KafkaIssueRepository03() {
+  public KafkaIssueTxWithoutCommitRepository() {
     try {
       final Properties config = new Properties();
       config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-      config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+      config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class.getName());
       config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
       //Acknowledge to all replicas
       config.put(ProducerConfig.ACKS_CONFIG, "all");
       //Transaction
       config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
-      config.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, "kafka-issue-repository");
+      config.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, "kafka-issue-repository-tx-uncommitted");
 
       producer = new KafkaProducer<>(config);
       producer.initTransactions();
@@ -47,9 +48,9 @@ public class KafkaIssueRepository03 implements IssueRepository {
     try {
       producer.beginTransaction();
 
-      final String key = issue.id();
+      final Integer key = issue.id();
       final String value = issue.printJson();
-      final ProducerRecord<String, String> record = new ProducerRecord<>(TOPIC, key, value);
+      final ProducerRecord<Integer, String> record = new ProducerRecord<>(TOPIC, key, value);
       producer.send(
           record,
           (metadata, exception) -> {
@@ -65,14 +66,15 @@ public class KafkaIssueRepository03 implements IssueRepository {
             }
           });
 
-      final ProducerRecord<String, String> logRecord =
+      final ProducerRecord<Integer, String> logRecord =
           new ProducerRecord<>(LOGS_TOPIC, String.format("issue %s added", issue.id()));
       producer.send(logRecord);
 
-      producer.commitTransaction();
+      //Disable commit to test isolation level.
+      //producer.commitTransaction();
     } catch (Exception e) {
       e.printStackTrace();
-      producer.abortTransaction();
+      //producer.abortTransaction();
     }
   }
 }

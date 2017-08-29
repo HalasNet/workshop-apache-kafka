@@ -5,7 +5,7 @@ package no.sysco.middleware.workshops.kafka.representations;
  */
 public class IssueRepresentation {
 
-  private String id;
+  private Integer id;
   private String type;
   private String title;
   private String description;
@@ -13,11 +13,11 @@ public class IssueRepresentation {
   IssueRepresentation() {
   }
 
-  public String getId() {
+  public Integer getId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(Integer id) {
     this.id = id;
   }
 

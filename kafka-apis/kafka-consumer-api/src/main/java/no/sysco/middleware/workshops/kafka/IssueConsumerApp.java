@@ -11,21 +11,55 @@ import java.util.concurrent.TimeUnit;
  *
  */
 public class IssueConsumerApp {
-  private static final String GROUP_ID ="consumer-group-04";
-  private static final String TOPIC = "issue-events-03";
-  private static final int NUM_CONSUMER_INSTANCES = 3;
 
   public static void main(String[] args) {
-    final ExecutorService executor = Executors.newFixedThreadPool(NUM_CONSUMER_INSTANCES);
+    createConsumerGroup();
+
+    createTxConsumerGroup();
+  }
+
+  private static void createTxConsumerGroup() {
+    final ExecutorService executor = Executors.newFixedThreadPool(1);
     final List<KafkaConsumerLoop> consumers = new ArrayList<>();
 
     //Start Consumer Threads
-    for (int i = 0; i < NUM_CONSUMER_INSTANCES; i++) {
+    for (int i = 0; i < 1; i++) {
       final KafkaConsumerLoop consumer =
           new KafkaConsumerLoop(
               i,
-              GROUP_ID,
-              Collections.singletonList(TOPIC));
+              "tx-group-01",
+              Collections.singletonList("issue-events"),
+              true);
+      consumers.add(consumer);
+      executor.submit(consumer);
+    }
+
+    //Close Consumers
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      for (KafkaConsumerLoop consumer : consumers) {
+        consumer.shutdown();
+      }
+      executor.shutdown();
+      try {
+        executor.awaitTermination(5000, TimeUnit.MILLISECONDS);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }));
+  }
+
+  private static void createConsumerGroup() {
+    final ExecutorService executor = Executors.newFixedThreadPool(3);
+    final List<KafkaConsumerLoop> consumers = new ArrayList<>();
+
+    //Start Consumer Threads
+    for (int i = 0; i < 3; i++) {
+      final KafkaConsumerLoop consumer =
+          new KafkaConsumerLoop(
+              i,
+              "group-01",
+              Collections.singletonList("issue-events"),
+              false);
       consumers.add(consumer);
       executor.submit(consumer);
     }

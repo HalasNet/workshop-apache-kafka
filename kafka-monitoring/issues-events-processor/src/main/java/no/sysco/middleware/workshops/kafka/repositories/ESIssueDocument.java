@@ -41,7 +41,7 @@ public class ESIssueDocument {
     this.type = type;
   }
 
-  public String printJson() {
+  String printJson() {
     return "{\"id\": \"" + id + "\", \"title\": \"" + title + "\", \"description\": \"" + description + "\", \"type\": \"" + type + "\" }";
   }
 }

@@ -16,13 +16,13 @@ import java.util.Properties;
 /**
  *
  */
-public class KafkaIssueRepository implements IssueRepository {
+public class KafkaIssueBatchRepository implements IssueRepository {
 
   private static final String TOPIC = "issue-events";
 
   private final Producer<Integer, String> producer;
 
-  public KafkaIssueRepository() {
+  public KafkaIssueBatchRepository() {
     try {
       final Properties config = new Properties();
       config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
@@ -30,6 +30,9 @@ public class KafkaIssueRepository implements IssueRepository {
       config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
       //Acknowledge to all replicas
       config.put(ProducerConfig.ACKS_CONFIG, "all");
+      //Batch support
+      config.put(ProducerConfig.BATCH_SIZE_CONFIG, 10000); //10KB
+      config.put(ProducerConfig.LINGER_MS_CONFIG, 30000); //30secs
 
       producer = new KafkaProducer<>(config);
     } catch (Exception e) {
@@ -40,6 +43,7 @@ public class KafkaIssueRepository implements IssueRepository {
 
   @Override
   public void put(Issue issue) {
+
     final Integer key = issue.id();
     final String value = issue.printJson();
     final ProducerRecord<Integer, String> record = new ProducerRecord<>(TOPIC, key, value);

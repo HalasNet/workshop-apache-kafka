@@ -18,11 +18,13 @@ import java.util.Properties;
 public class KafkaConsumerLoop implements Runnable {
   private final KafkaConsumer<String, String> consumer;
   private final List<String> topics;
+  private final String groupId;
   private final int id;
 
   KafkaConsumerLoop(int id,
                     String groupId,
-                    List<String> topics) {
+                    List<String> topics,
+                    boolean readCommitted) {
     Properties config = new Properties();
     config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
     config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -32,10 +34,14 @@ public class KafkaConsumerLoop implements Runnable {
     config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
     //Disable auto-commit
     config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+    if (readCommitted)
     //Isolation level: read committed records
-    config.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
+    {
+      config.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
+    }
 
     this.id = id;
+    this.groupId = groupId;
     this.topics = topics;
     this.consumer = new KafkaConsumer<>(config);
   }
@@ -49,11 +55,12 @@ public class KafkaConsumerLoop implements Runnable {
         ConsumerRecords<String, String> records = consumer.poll(Long.MAX_VALUE);
         for (ConsumerRecord<String, String> record : records) {
           Map<String, Object> data = new HashMap<>();
+          data.put("topic", record.topic());
           data.put("partition", record.partition());
           data.put("offset", record.offset());
           data.put("key", record.key());
           data.put("value", record.value());
-          System.out.printf("id => %d -- metadata => %s%n", this.id, data);
+          System.out.printf("group => %s instance => %d -- metadata => %s%n", this.groupId, this.id, data);
           consumer.commitAsync();
         }
       }
