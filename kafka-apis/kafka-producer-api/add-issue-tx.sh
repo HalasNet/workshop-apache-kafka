@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
+HOST=workshop-apache-kafka.westeurope.cloudapp.azure.com
+# HOST=localhost
 
-curl -XPOST localhost:8801/issues/_tx \
+curl -XPOST ${HOST}:8801/issues/_tx \
      -H "Content-Type: application/json" \
      -d '{"id": 3, "type": "BUG", "title": "Bug 1", "description": "..."}'
