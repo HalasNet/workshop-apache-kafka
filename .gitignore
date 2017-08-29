@@ -3,3 +3,5 @@ target/
 *.tgz
 kafka-cluster/kafka_2.11-0.11.0.0
 *.log
+prometheus-*/
+grafana-*/
